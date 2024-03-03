@@ -1,4 +1,5 @@
 import streamlit as st
+from build_index import build_index
 
 st.title("ChatGPT-like clone")
 
@@ -22,3 +23,10 @@ if prompt := st.chat_input("What is up?"):
     # Display user message in chat message container
     with st.chat_message("user"):
         st.markdown(prompt)
+
+pdf = st.sidebar.file_uploader(
+    "Upload a PDF file",
+    type="PDF",
+    key="pdf_file",
+    on_change=build_index
+)
