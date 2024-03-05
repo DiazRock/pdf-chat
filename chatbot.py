@@ -3,10 +3,6 @@ from build_index import build_index
 
 st.title("ChatGPT-like clone")
 
-# Set a default model
-if "openai_model" not in st.session_state:
-    st.session_state["openai_model"] = "gpt-3.5-turbo"
-
 # Initialize chat history
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -30,3 +26,4 @@ pdf = st.sidebar.file_uploader(
     key="pdf_file",
     on_change=build_index
 )
+
