@@ -11,7 +11,7 @@ if "messages" not in st.session_state:
 
 # Display chat messages from history on app rerun
 for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
+    with st.chat_message(message["agent"]):
         st.markdown(message["content"])
 
 # Accept user input

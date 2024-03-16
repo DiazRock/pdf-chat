@@ -4,6 +4,7 @@ from pypdf import PdfReader
 import numpy as np
 from faiss import IndexFlatL2
 from mistralai.client import MistralClient
+from mistralai.models.chat_completion import ChatMessage
 import time
 
 
@@ -26,7 +27,7 @@ def embed(text: str):
 
 
 def add_message(msg, agent="ai", stream=True, store=True):
-    if stream in isinstance(msg, str):
+    if stream and isinstance(msg, str):
         msg = stream_str(msg)
 
     with st.chat_message(agent):
@@ -108,7 +109,7 @@ def build_index():
         embeddings.append(embed(chunk))
         progress.progress((i + 1) / len(chunks))
 
-    embeddings = np.array
+    embeddings = np.array(embeddings)
     dimension = embeddings.shape[1]
     index = IndexFlatL2(dimension)
     index.add(embeddings)
@@ -121,7 +122,7 @@ def reply(query: str, index: IndexFlatL2):
     embedding = embed(query)
     embedding = np.array([embedding])
 
-    _, indexes = index.search(embedding, k=2)
+    _, indexes = index.search(embedding, k = len(embedding))
     context = [
         st.session_state.chunks[i] for i in indexes.tolist()[0]
     ]
@@ -129,7 +130,7 @@ def reply(query: str, index: IndexFlatL2):
     messages = [
         ChatMessage(
             role="user",
-            content = PROMPT.format(conext = context, query= query),
+            content = PROMPT.format(context = context, query= query),
         )
     ]
     response = CLIENT.chat_stream(
@@ -137,5 +138,3 @@ def reply(query: str, index: IndexFlatL2):
     )
 
     add_message(stream_response(response))
-
-
